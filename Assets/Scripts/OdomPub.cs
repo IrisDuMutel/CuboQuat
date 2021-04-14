@@ -71,13 +71,13 @@ public class OdomPub : MonoBehaviour
             (orient,posit,lin_vel,ang_vel) = RFtrans.Left2Right(transf,rb);
             RosMessageTypes.Geometry.Point position = new RosMessageTypes.Geometry.Point(posit[0],posit[1],posit[2]);
             RosMessageTypes.Geometry.Quaternion orientation = new RosMessageTypes.Geometry.Quaternion(
-            orient[0],
-            orient[1],
-            orient[2],
-            orient[3]
+            orient.x,
+            orient.y,
+            orient.z,
+            orient.w
 
             );
-            RosMessageTypes.Geometry.Vector3 linear = new RosMessageTypes.Geometry.Vector3(lin_vel[0],lin_vel[1],lin_vel[2]);
+            RosMessageTypes.Geometry.Vector3 linear = new RosMessageTypes.Geometry.Vector3(lin_vel[0],lin_vel[1],-1f*lin_vel[2]);
             RosMessageTypes.Geometry.Vector3 angular = new RosMessageTypes.Geometry.Vector3(ang_vel[0],ang_vel[1],ang_vel[2]);
              
 
