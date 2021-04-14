@@ -7,16 +7,13 @@ public class OdomSub : MonoBehaviour
 {
     private Transform _transform;
     private Vector3 vel;
-    private Rigidbody _rb;
-    private RFHandTransform _rftrans;
+    public Rigidbody _rb;
+    public RFHandTransform _rftrans;
     // Start is called before the first frame update
     void Start() 
     {
 
         ROSConnection.instance.Subscribe<Twist>("CubeCommand", _callback);
-
-       
-
 
     }
     void _callback(Twist data)
@@ -30,7 +27,8 @@ public class OdomSub : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _rftrans.Right2Left(_transform,vel);
+        
+        _rftrans.Right2Left(_rb,vel);
 
         
     }

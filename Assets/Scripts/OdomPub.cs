@@ -8,17 +8,29 @@ using Odometry = RosMessageTypes.Nav.Odometry;
 using Header = RosMessageTypes.Std.Header;
 public class OdomPub : MonoBehaviour
 {
-        ROSConnection ros;
+
+    public Rigidbody rb;
+    public Transform transf;
+
+    public static Transform _transf;
+    public static Rigidbody _rigidB;
+
+    // public OdomPub(Transform transf, Rigidbody rb)
+    // {
+    //    _transf = transf;
+    //    _rigidB = rb;
+    // }
+
+    ROSConnection ros;
     private string topicName="odom";
     private uint flag;
-    // The GameObject 
-    // public BoxCollider _transform;
-    public Rigidbody rb;
-    public Transform _transform;
-    // Publish the _transform's position and rotation every N seconds
+    private Quaternion orient;
+    private Vector3 posit;
+    private Vector3 lin_vel;
+    private Vector3 ang_vel;
+    // Publish the transf's position and rotation every N seconds
     public GameObject cube;
-    private RFHandTransform RFtrans;
-
+    public RFHandTransform RFtrans;
     public float publishMessageFrequency = 0.5f;
     // Used to determine how much time has elapsed since the last message was published
     private float timeElapsed;
@@ -28,6 +40,7 @@ public class OdomPub : MonoBehaviour
         // start the ROS connection
         ros = ROSConnection.instance;
         flag = 1;
+        
     }
 
     private void Update()
@@ -55,16 +68,17 @@ public class OdomPub : MonoBehaviour
                           .00, 0.00, 0.00, 0.10, 0.00, 0.00,
                           .00, 0.00, 0.00, 0.00, 0.10, 0.00,
                           0.00, 0.00, 0.00, 0.00, 0.00, 0.10};
-            RFtrans.Left2Right(_transform,rb);
-            RosMessageTypes.Geometry.Point position = new RosMessageTypes.Geometry.Point(_transform.position.x,_transform.position.y,_transform.position.z);
+            (orient,posit,lin_vel,ang_vel) = RFtrans.Left2Right(transf,rb);
+            RosMessageTypes.Geometry.Point position = new RosMessageTypes.Geometry.Point(posit[0],posit[1],posit[2]);
             RosMessageTypes.Geometry.Quaternion orientation = new RosMessageTypes.Geometry.Quaternion(
-            _transform.transform.rotation.w,
-            _transform.transform.rotation.x,
-            _transform.transform.rotation.y,
-            _transform.transform.rotation.z
+            orient[0],
+            orient[1],
+            orient[2],
+            orient[3]
+
             );
-            RosMessageTypes.Geometry.Vector3 linear = new RosMessageTypes.Geometry.Vector3(rb.velocity[0], rb.velocity[1], rb.velocity[2]);
-            RosMessageTypes.Geometry.Vector3 angular = new RosMessageTypes.Geometry.Vector3(rb.angularVelocity[0],rb.angularVelocity[1],rb.angularVelocity[2]);
+            RosMessageTypes.Geometry.Vector3 linear = new RosMessageTypes.Geometry.Vector3(lin_vel[0],lin_vel[1],lin_vel[2]);
+            RosMessageTypes.Geometry.Vector3 angular = new RosMessageTypes.Geometry.Vector3(ang_vel[0],ang_vel[1],ang_vel[2]);
              
 
             RosMessageTypes.Geometry.Pose pose = new RosMessageTypes.Geometry.Pose(position, orientation);
@@ -80,7 +94,7 @@ public class OdomPub : MonoBehaviour
 
             
             ) ;
-            // _transform.GetWorldPose(out _pos, out _rot);
+            // transf.GetWorldPose(out _pos, out _rot);
             // Finally send the message to server_endpoint.py running in ROS
             ros.Send(topicName, targetPos);
 
