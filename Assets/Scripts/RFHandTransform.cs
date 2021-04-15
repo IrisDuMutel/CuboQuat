@@ -18,7 +18,7 @@ public class RFHandTransform : MonoBehaviour
     public void Right2Left(Transform _transform, Rigidbody _rb , Vector3 pos, Quaternion rot, Vector3 vel, Vector3 ang)
     {
         // // Orientation
-        // _transform.rotation = new Quaternion(rot[0],-rot[1],-rot[3],-rot[2]);
+        _transform.rotation = new Quaternion(-rot[1],-rot[3],-rot[2],rot[0]);
 
         // Position
         // _transform.position = new Vector3(pos[0],pos[2],pos[1]);

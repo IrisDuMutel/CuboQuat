@@ -10,7 +10,7 @@ public class QuatChBasis : MonoBehaviour
     void Start()
     {
         var rot = cube.rotation;
-        cube.transform.rotation = new Quaternion(rot[0],-rot[1],-rot[3],-rot[2]);
+        cube.transform.rotation = new Quaternion(-1f*rot.x,-1f*rot.z,-1f*rot.y,rot.w);
         
     }
 
